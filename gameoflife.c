@@ -40,6 +40,60 @@ int main ( )
 void init(Schepping *w, Schepping *g){
 
     fp = fopen("/home/user/workspace/game of life/settings.ini", "r");
+
+
+
+    if (fp == NULL) {
+        perror("couldn't open settings.ini for reading: ");
+    }
+    int Dim=0,x,y;
+    fscanf(fp, "%d %d %d ", &x ,&y, &Dim);
+    w->maxRij=x;
+    w->maxKol=y;
+    g->maxKol=Dim;
+    g->maxRij=Dim;
+
+
+    w->Populatie= createArray(y,x);
+
+    int** G;
+
+    G=createArray(Dim,Dim);
+
+
+
+    for(int i=0;i<Dim;i++){
+        for(int j=0;j<Dim;j++){
+            fscanf(fp,"%d",&G[i][j]);
+        }
+    }
+    g->Populatie=G;
+
+    int midX, midY, midD;
+    midX=x/2;
+    midY=y/2;
+    midD=Dim/2;
+    midX-=midD;
+    midY-=midD;
+
+
+    for(int i=0;i<Dim;i++){
+        for(int j=0;j<Dim;j++){
+            w->Populatie[midY+i][+midX+j]=g->Populatie[i][j];
+        }
+    }
+
+
+    fclose(fp);
+}
+
+void toon(Schepping w, int l){
+
+    int i,j;
+    for(j=0;j<w.maxKol;j++){
+            printf("--");
+
+        }
     printf("\n leeftijd: %d\n",l);
 
     for(j=0;j<w.maxKol;j++){
@@ -106,6 +160,7 @@ int checkBuren(Schepping w, int i, int j){
                 if(x>=0&&x<w.maxKol&&y>=0&&y<w.maxRij){
 
                     buur=w.Populatie[y][x];
+                    //printf("buur@ %d,%d = %d\n",x,y,buur);
 
                     if(buur){
                         count++;
@@ -146,4 +201,4 @@ int** createArray(int kol, int rij){
     }
 
     return A;
-
+}
